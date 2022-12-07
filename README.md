@@ -1,5 +1,7 @@
 # EQ1999-Bank
 
+Put this script in its own folder.
+
 Start by logging into eq p1999 and use the /outputfile inventory command
 
 After that running the script will open the program.
