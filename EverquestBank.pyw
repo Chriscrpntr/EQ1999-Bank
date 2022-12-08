@@ -102,7 +102,8 @@ def dbClick():
             charlist.insert(END,str(record[0]) + '\n')
     conn.close()
 
-
+##########################################################################
+#Resetting the Sqlite Character Database
 def Resetchar():
     conn= sqlite3.connect(r"CharList.db")
     c = conn.cursor()
@@ -118,6 +119,8 @@ def Resetchar():
     conn.commit()
     conn.close()
 
+###########################################################################
+# Recreates the Inventory Database using the Character Database
 def Freshdb():
     conn = sqlite3.connect(r"Eqinv.db")
     c = conn.cursor()
@@ -160,6 +163,9 @@ def Freshdb():
 
     conn.close()
 
+######################################################################################
+#Button Commands
+
 resetchardata = Button(Db_Frame, text= "Reset Character Data", command = Resetchar)
 resetchardata.grid(row=3)
 
@@ -176,7 +182,7 @@ createfreshdb.grid(row = 4)
 
 
 ##################################################################################################
-#Set up
+#Set up the Character List Database and Inventory Database
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
 charlist=Listbox(Db_Frame, width = 110, height = 17)
