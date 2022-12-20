@@ -91,6 +91,7 @@ def dbClick():
     c = conn.cursor()
     c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(PlayerName.get(),))
     c.execute("""DELETE FROM Inventory WHERE Name = 'Empty'""")
+    c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
     conn.commit()
     conn.close()
     conn= sqlite3.connect(r"CharList.db")
@@ -164,6 +165,7 @@ def Freshdb():
                     c.execute("""INSERT INTO Inventory (Type, Name , ID , Count, Slots) VALUES(?,?,?,?,?)""",game)
                     c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(charname,))
                     c.execute("""DELETE FROM Inventory WHERE Name = 'Empty'""")
+                    c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
             conn.commit()
             ws.update()
 
