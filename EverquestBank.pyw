@@ -38,7 +38,9 @@ def myClick(ItemName):
             print_records.insert(END,str(record) + '\n')
     print_records.grid(row = 5)
     w.config(command = print_records.yview)
+    ws.update()
     conn.close()
+    
 
 e = Entry(Search_Frame)
 e.bind("<Return>",myClick)
@@ -65,6 +67,7 @@ def dbClick():
     except:
         return
     Playerfile = ws.filename
+    ws.update()
 
     conn = sqlite3.connect(r"Charpaths.db")
     c = conn.cursor()
@@ -83,6 +86,7 @@ def dbClick():
                 c.execute("""INSERT INTO Inventory (Type, Name , ID , Count, Slots) VALUES(?,?,?,?,?)""",game)
                 conn.commit()
                 conn.close()
+                ws.update()
     conn = sqlite3.connect(r"Eqinv.db")
     c = conn.cursor()
     c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(PlayerName.get(),))
@@ -94,13 +98,12 @@ def dbClick():
     c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
     c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName.get(),))
     conn.commit()
-    charlist=Listbox(Db_Frame, width = 110, height = 17)
-    charlist.grid(row = 6)
     c.execute("SELECT * FROM Charlist")
     records = c.fetchall()
     for record in records:
             charlist.insert(END,str(record[0]) + '\n')
     conn.close()
+    ws.update()
 
 ##########################################################################
 #Resetting the Sqlite Character Database
@@ -118,6 +121,7 @@ def Resetchar():
     c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
     conn.commit()
     conn.close()
+    ws.update()
 
 ###########################################################################
 # Recreates the Inventory Database using the Character Database
@@ -134,6 +138,7 @@ def Freshdb():
     c.execute("""CREATE TABLE IF NOT EXISTS Inventory(Type, Name , ID , Count, Slots,Char)""")
     conn.commit()
     conn.close()
+    ws.update()
 
     conn = sqlite3.connect(r"CharList.db")
     c = conn.cursor()
@@ -160,8 +165,10 @@ def Freshdb():
                     c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(charname,))
                     c.execute("""DELETE FROM Inventory WHERE Name = 'Empty'""")
             conn.commit()
+            ws.update()
 
     conn.close()
+    ws.update()
 
 ######################################################################################
 #Button Commands
@@ -199,4 +206,10 @@ c = conn.cursor()
 c.execute("""CREATE TABLE IF NOT EXISTS Inventory(Type, Name , ID , Count, Slots, Char)""")
 conn.commit()
 conn.close()
+conn = sqlite3.connect(r"Charpaths.db")
+c = conn.cursor()
+c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
+conn.commit()
+conn.close()
+ws.update()
 ws.mainloop()
