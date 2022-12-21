@@ -86,6 +86,7 @@ def dbClick():
             charlist.insert(END,str(record[0]) + '\n')
     conn.close()
     ws.update()
+    Freshdb()
 
 ##########################################################################
 #Resetting the Sqlite Character Database
@@ -107,6 +108,7 @@ def Resetchar():
         conn.close()
         charlist.delete(charlist.curselection())
         ws.update()
+        Freshdb()
 
 
 ###########################################################################
