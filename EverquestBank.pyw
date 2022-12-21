@@ -66,34 +66,35 @@ Search_Frame.update()
 
 def dbClick():
 
-    ws.filename = filedialog.askopenfilename()
-    Playerfile = ws.filename
-    PlayerName = str(Playerfile.split("/")[-1])
-    PlayerName = str(PlayerName.split("-")[-2])
-    PlayerName = str(PlayerName.strip())
+    ws.filename = filedialog.askopenfilenames()
+    for ws.filename in ws.filename:
+        Playerfile = ws.filename
+        PlayerName = str(Playerfile.split("/")[-1])
+        PlayerName = str(PlayerName.split("-")[-2])
+        PlayerName = str(PlayerName.strip())
 
-    ws.update()
-    conn = sqlite3.connect(r"Charpaths.db")
-    c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string, path string)""")
-    c.execute("""INSERT INTO Charpath(path) VALUES(?)""",(Playerfile,))
-    conn.commit()
-    c.execute("""SELECT * FROM Charpath WHERE path = ?""",(Playerfile,))
-    records = c.fetchall()
-    conn.close
-    conn= sqlite3.connect(r"CharList.db")
-    c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
-    c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName,))
-    conn.commit()
-    charlist.delete(0,'end')
-    c.execute("SELECT * FROM Charlist")
-    records = c.fetchall()
-    for record in records:
-            charlist.insert(END,str(record[0]) + '\n')
-    conn.close()
-    ws.update()
-    Freshdb()
+        ws.update()
+        conn = sqlite3.connect(r"Charpaths.db")
+        c = conn.cursor()
+        c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string, path string)""")
+        c.execute("""INSERT INTO Charpath(path) VALUES(?)""",(Playerfile,))
+        conn.commit()
+        c.execute("""SELECT * FROM Charpath WHERE path = ?""",(Playerfile,))
+        records = c.fetchall()
+        conn.close
+        conn= sqlite3.connect(r"CharList.db")
+        c = conn.cursor()
+        c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
+        c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName,))
+        conn.commit()
+        charlist.delete(0,'end')
+        c.execute("SELECT * FROM Charlist")
+        records = c.fetchall()
+        for record in records:
+                charlist.insert(END,str(record[0]) + '\n')
+        conn.close()
+        ws.update()
+        Freshdb()
 
 ##########################################################################
 #Resetting the Sqlite Character Database
