@@ -27,17 +27,15 @@ nb.add(Db_Frame, text="Database")
 #Search Tab
 
 def myClick(ItemName):
-
+    Tree.delete(*Tree.get_children())
     ItemName = e.get()
     conn = sqlite3.connect(os.path.realpath('Eqinv.db'))
     c = conn.cursor()
     c.execute("SELECT Type,Name,Count,Char FROM Inventory WHERE Name LIKE ?",(f'%{ItemName}%',))
     records = c.fetchall()
-    print_records= Listbox(Search_Frame,yscrollcommand=w.set, width = 110, height = 17)
-    for record in records:
-            print_records.insert(END,str(record) + '\n')
-    print_records.grid(row = 5)
-    w.config(command = print_records.yview)
+    for row in records:
+        Tree.insert("",END, values = row)
+    w.config(command = Tree.yview)
     ws.update()
     conn.close()
     
@@ -51,6 +49,15 @@ Mylabel = Label(Search_Frame, text = "What Item Are You Looking For?", justify= 
 Mylabel.grid(row = 0, padx=250)
 Spacelabel = Label(Search_Frame)
 Spacelabel.grid(row=4)
+Tree = ttk.Treeview(Search_Frame, columns=("Type", "Name", "Count","Char"), show="headings")
+Tree.heading("Type", text="Location", anchor=CENTER)
+Tree.heading("Name", text="Name of Item", anchor=CENTER)
+Tree.heading("Count", text="Count", anchor=CENTER)
+Tree.heading("Char", text="Character", anchor=CENTER)
+Tree.column("Type", width=100)
+Tree.column("Count", width=50)
+Tree.grid(row = 5, sticky="ns")
+Search_Frame.update()
 
 
 
@@ -123,11 +130,10 @@ def Freshdb():
     conn = sqlite3.connect(r"Eqinv.db")
     c = conn.cursor()
     c.execute("""DROP TABLE Inventory""")
-    c.execute("""CREATE TABLE IF NOT EXISTS Inventory(Type, Name , ID , Count, Slots,Char)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS Inventory(Type, Name , ID , Count, Slots, Char)""")
     conn.commit()
     conn.close()
     ws.update()
-
     conn = sqlite3.connect(r"CharList.db")
     c = conn.cursor()
     c.execute("""SELECT * FROM Charlist""")
