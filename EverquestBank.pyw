@@ -57,8 +57,6 @@ Spacelabel.grid(row=4)
 ####################################################################################################
 #Database Set Up
 
-
-
 def dbClick():
     if(PlayerName.get()==''):
         return
@@ -68,7 +66,6 @@ def dbClick():
         return
     Playerfile = ws.filename
     ws.update()
-
     conn = sqlite3.connect(r"Charpaths.db")
     c = conn.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
@@ -77,33 +74,18 @@ def dbClick():
     c.execute("""SELECT * FROM Charpath WHERE path = ?""",(Playerfile,))
     records = c.fetchall()
     conn.close
-    for record in records:
-        with open((f'{record[0]}'), newline = '') as games:                                                                                          
-            game_reader = csv.reader(games, delimiter='\t')
-            for game in game_reader:
-                conn = sqlite3.connect(r"Eqinv.db")
-                c = conn.cursor()
-                c.execute("""INSERT INTO Inventory (Type, Name , ID , Count, Slots) VALUES(?,?,?,?,?)""",game)
-                conn.commit()
-                conn.close()
-                ws.update()
-    conn = sqlite3.connect(r"Eqinv.db")
-    c = conn.cursor()
-    c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(PlayerName.get(),))
-    c.execute("""DELETE FROM Inventory WHERE Name = 'Empty'""")
-    c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
-    conn.commit()
-    conn.close()
     conn= sqlite3.connect(r"CharList.db")
     c = conn.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
     c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName.get(),))
     conn.commit()
+    charlist.delete(0,'end')
     c.execute("SELECT * FROM Charlist")
     records = c.fetchall()
     for record in records:
             charlist.insert(END,str(record[0]) + '\n')
     conn.close()
+    PlayerName.delete(0,'end')
     ws.update()
 
 ##########################################################################
