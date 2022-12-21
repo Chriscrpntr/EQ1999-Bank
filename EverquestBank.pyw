@@ -83,7 +83,6 @@ def dbClick():
     for record in records:
             charlist.insert(END,str(record[0]) + '\n')
     conn.close()
-    PlayerName.delete(0,'end')
     ws.update()
 
 ##########################################################################
@@ -103,6 +102,7 @@ def Resetchar():
     conn.commit()
     conn.close()
     ws.update()
+
 
 ###########################################################################
 # Recreates the Inventory Database using the Character Database
