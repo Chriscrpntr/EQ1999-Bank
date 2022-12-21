@@ -63,10 +63,12 @@ def dbClick():
     Playerfile = ws.filename
     PlayerName = str(Playerfile.split("/")[-1])
     PlayerName = str(PlayerName.split("-")[-2])
+    PlayerName = str(PlayerName.strip())
+
     ws.update()
     conn = sqlite3.connect(r"Charpaths.db")
     c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string, path string)""")
     c.execute("""INSERT INTO Charpath(path) VALUES(?)""",(Playerfile,))
     conn.commit()
     c.execute("""SELECT * FROM Charpath WHERE path = ?""",(Playerfile,))
@@ -88,20 +90,23 @@ def dbClick():
 ##########################################################################
 #Resetting the Sqlite Character Database
 def Resetchar():
-    conn= sqlite3.connect(r"CharList.db")
-    c = conn.cursor()
-    c.execute("""DROP TABLE Charlist""")
-    c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
-    charlist.delete(0,END)
-    conn.commit()
-    conn.close()
-    conn = sqlite3.connect(r"Charpaths.db")
-    c = conn.cursor()
-    c.execute("""DROP TABLE Charpath""")
-    c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
-    conn.commit()
-    conn.close()
-    ws.update()
+    for i in charlist.curselection():
+        charname = charlist.get(i)
+        print(str(charname.strip()))
+        conn= sqlite3.connect(r"CharList.db")
+        c = conn.cursor()
+        c.execute("""DELETE FROM Charlist WHERE Char = ?""",(str(charname.strip()),))
+        c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
+        conn.commit()
+        conn.close()
+        conn = sqlite3.connect(r"Charpaths.db")
+        c = conn.cursor()
+        c.execute("""DELETE FROM Charpath WHERE Char = ?""",(str(charname.strip()),))
+        c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string,path string)""")
+        conn.commit()
+        conn.close()
+        charlist.delete(charlist.curselection())
+        ws.update()
 
 
 ###########################################################################
@@ -130,7 +135,7 @@ def Freshdb():
         charname = record[0]
         conn = sqlite3.connect(r"Charpaths.db")
         c = conn.cursor()
-        c.execute("""SELECT * FROM Charpath""")
+        c.execute("""SELECT path FROM Charpath""")
         records = c.fetchall()
         conn.close()
         conn = sqlite3.connect(r"Eqinv.db")
@@ -155,7 +160,7 @@ def Freshdb():
 ######################################################################################
 #Button Commands
 
-resetchardata = Button(Db_Frame, text= "Reset Character Data", command = Resetchar)
+resetchardata = Button(Db_Frame, text= "Delete Selected Character", command = Resetchar)
 resetchardata.grid(row=3)
 
 dbClickButton = Button(Db_Frame, text="Add Character", command=dbClick)
@@ -169,9 +174,9 @@ createfreshdb.grid(row = 4)
 #Set up the Character List Database and Inventory Database
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
-charlist=Listbox(Db_Frame, width = 110, height = 17)
+charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=SINGLE)
 charlist.grid(row = 6)
-c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
+c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
 c.execute("SELECT * FROM Charlist")
 records = c.fetchall()
 for record in records:
@@ -185,7 +190,7 @@ conn.commit()
 conn.close()
 conn = sqlite3.connect(r"Charpaths.db")
 c = conn.cursor()
-c.execute("""CREATE TABLE IF NOT EXISTS Charpath(path string)""")
+c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string, path string)""")
 conn.commit()
 conn.close()
 ws.update()
