@@ -58,13 +58,11 @@ Spacelabel.grid(row=4)
 #Database Set Up
 
 def dbClick():
-    if(PlayerName.get()==''):
-        return
-    try:
-        ws.filename = filedialog.askopenfilename()
-    except:
-        return
+
+    ws.filename = filedialog.askopenfilename()
     Playerfile = ws.filename
+    PlayerName = str(Playerfile.split("/")[-1])
+    PlayerName = str(PlayerName.split("-")[-2])
     ws.update()
     conn = sqlite3.connect(r"Charpaths.db")
     c = conn.cursor()
@@ -77,7 +75,7 @@ def dbClick():
     conn= sqlite3.connect(r"CharList.db")
     c = conn.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char string)""")
-    c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName.get(),))
+    c.execute("""INSERT INTO Charlist(Char) VALUES(?)""",(PlayerName,))
     conn.commit()
     charlist.delete(0,'end')
     c.execute("SELECT * FROM Charlist")
@@ -162,11 +160,6 @@ resetchardata.grid(row=3)
 
 dbClickButton = Button(Db_Frame, text="Add Character", command=dbClick)
 dbClickButton.grid(row = 2)
-
-Playerlabel = Label(Db_Frame, text="Name of the character")
-Playerlabel.grid(row=0)
-PlayerName = Entry(Db_Frame)
-PlayerName.grid(row = 1)
 
 createfreshdb = Button(Db_Frame, text= "Create Fresh Database From Character List", command=Freshdb)
 createfreshdb.grid(row = 4)
