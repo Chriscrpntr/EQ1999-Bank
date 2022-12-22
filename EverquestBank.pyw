@@ -6,6 +6,7 @@ import sqlite3
 import csv, sqlite3
 from tkinter import filedialog
 import time
+from tkinter.ttk import Progressbar
 ###################################################################
 #Tkinter Set Up
 
@@ -72,7 +73,6 @@ def dbClick():
         PlayerName = str(Playerfile.split("/")[-1])
         PlayerName = str(PlayerName.split("-")[-2])
         PlayerName = str(PlayerName.strip())
-
         ws.update()
         conn = sqlite3.connect(r"Charpaths.db")
         c = conn.cursor()
@@ -114,9 +114,20 @@ def Resetchar():
         c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string,path string)""")
         conn.commit()
         conn.close()
-        charlist.delete(charlist.curselection())
+        charlist.delete(0, END)
         ws.update()
-        Freshdb()
+        p.step()
+    conn= sqlite3.connect(r"CharList.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM Charlist")
+    records = c.fetchall()
+    charlist.delete(0,END)
+    for record in records:
+            charlist.insert(END,str(record[0]) + '\n')
+    p['value']= 100
+    p['value']=0
+    Freshdb()
+
 
 
 ###########################################################################
@@ -150,9 +161,10 @@ def Freshdb():
         conn = sqlite3.connect(r"Eqinv.db")
         c = conn.cursor()
         for record in records:
+            p.step()
             conn = sqlite3.connect(r"Eqinv.db")
             with open(f'{record[0]}', newline = '') as games:                                                                                          
-                game_reader = csv.reader(games, delimiter='\t')
+                game_reader = csv.reader(games, delimiter='\t')   
                 for game in game_reader:
                    
                     c = conn.cursor()
@@ -162,8 +174,9 @@ def Freshdb():
                     c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
             conn.commit()
             ws.update()
-
     conn.close()
+    p['value']= 100
+    p['value']= 0
     ws.update()
 
 ######################################################################################
@@ -183,7 +196,7 @@ createfreshdb.grid(row = 4)
 #Set up the Character List Database and Inventory Database
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
-charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=SINGLE)
+charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=MULTIPLE)
 charlist.grid(row = 6)
 c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
 c.execute("SELECT * FROM Charlist")
@@ -202,5 +215,7 @@ c = conn.cursor()
 c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string, path string)""")
 conn.commit()
 conn.close()
+p = Progressbar(Db_Frame,orient=HORIZONTAL,length=200,mode="determinate",takefocus=True,maximum=100)
+p.grid() 
 ws.update()
 ws.mainloop()
