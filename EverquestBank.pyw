@@ -161,7 +161,7 @@ def Freshdb():
         conn = sqlite3.connect(r"Eqinv.db")
         c = conn.cursor()
         for record in records:
-            p.step()
+            
             conn = sqlite3.connect(r"Eqinv.db")
             with open(f'{record[0]}', newline = '') as games:                                                                                          
                 game_reader = csv.reader(games, delimiter='\t')   
@@ -172,6 +172,7 @@ def Freshdb():
                     c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(charname,))
                     c.execute("""DELETE FROM Inventory WHERE Name = 'Empty'""")
                     c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
+                    p.step()
             conn.commit()
             ws.update()
     conn.close()
