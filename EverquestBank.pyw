@@ -15,14 +15,16 @@ ws.title('Eq Inventory Search')
 ws.geometry('750x400')
 nb = ttk.Notebook(ws)
 nb.grid()
-Search_Frame = Frame(nb, width=500, height = 500)
-Db_Frame = Frame(nb, width=500, height = 500)
+Search_Frame = Frame(nb, width=400, height = 750)
+Db_Frame = Frame(nb, width=400, height = 750)
 
 Search_Frame.grid()
 Db_Frame.grid()
 
 nb.add(Search_Frame, text="Search")
 nb.add(Db_Frame, text="Database")
+ws.grid_columnconfigure(0,weight=1)
+ws.grid_rowconfigure(0,weight=1)
 
 #########################################################################################################
 #Search Tab
@@ -69,7 +71,7 @@ Tree.heading("Count", text="Count", anchor=CENTER)
 Tree.heading("Char", text="Character", anchor=CENTER)
 Tree.column("Type", width=100)
 Tree.column("Count", width=50)
-Tree.grid(row = 7, sticky="ns")
+Tree.grid(row = 7, sticky="")
 Search_Frame.update()
 
 
@@ -210,7 +212,7 @@ createfreshdb.grid(row = 4)
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
 charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=MULTIPLE)
-charlist.grid(row = 6)
+charlist.grid(row = 6, column=0, padx=35)
 c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
 c.execute("SELECT * FROM Charlist")
 records = c.fetchall()
