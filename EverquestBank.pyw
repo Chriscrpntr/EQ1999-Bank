@@ -1,3 +1,9 @@
+
+#Author: Chris Carpenter
+#Version 0.6.4
+#Discord: Aliafriend#2839
+
+
 from tkinter import *
 import sqlite3
 import os
@@ -12,19 +18,17 @@ from tkinter.ttk import Progressbar
 
 ws = Tk()
 ws.title('Eq Inventory Search')
-ws.geometry('750x400')
+ws.geometry('700x400')
 nb = ttk.Notebook(ws)
 nb.grid()
-Search_Frame = Frame(nb, width=400, height = 750)
-Db_Frame = Frame(nb, width=400, height = 750)
+Search_Frame = Frame(nb, width=500, height = 500)
+Db_Frame = Frame(nb, width=500, height = 500)
 
 Search_Frame.grid()
 Db_Frame.grid()
 
 nb.add(Search_Frame, text="Search")
 nb.add(Db_Frame, text="Database")
-ws.grid_columnconfigure(0,weight=1)
-ws.grid_rowconfigure(0,weight=1)
 
 #########################################################################################################
 #Search Tab
@@ -32,11 +36,9 @@ ws.grid_rowconfigure(0,weight=1)
 def myClick(ItemName):
     Tree.delete(*Tree.get_children())
     ItemName = e.get()
-    CharName = charchar.get()
-    Charslot = charslot.get()
     conn = sqlite3.connect(os.path.realpath('Eqinv.db'))
     c = conn.cursor()
-    c.execute("SELECT Type,Name,Count,Char FROM Inventory WHERE Name LIKE ? AND Char LIKE ? AND Type LIKE ?",(f'%{ItemName}%',f'%{CharName}%',f'%{Charslot}%'))
+    c.execute("SELECT Type,Name,Count,Char FROM Inventory WHERE Name LIKE ?",(f'%{ItemName}%',))
     records = c.fetchall()
     for row in records:
         Tree.insert("",END, values = row)
@@ -48,22 +50,12 @@ def myClick(ItemName):
 e = Entry(Search_Frame)
 e.bind("<Return>",myClick)
 e.grid(row = 1)
-charchar = Entry(Search_Frame)
-charchar.bind("<Return>",myClick)
-charchar.grid(row = 3)
-charslot = Entry(Search_Frame)
-charslot.bind("<Return>",myClick)
-charslot.grid(row = 5)
 w = Scrollbar(Search_Frame, orient='vertical')
-w.grid(row = 7, column = 1, sticky = 'ns')
-Mylabel = Label(Search_Frame, text = "What Item Are You Looking For? (Optional)", justify= CENTER)
+w.grid(row = 5, column = 1, sticky = 'ns')
+Mylabel = Label(Search_Frame, text = "What Item Are You Looking For?", justify= CENTER)
 Mylabel.grid(row = 0, padx=250)
-Mylabel = Label(Search_Frame, text = "", justify= CENTER)
-Mylabel.grid(row = 6, padx=250)
-Mylabel = Label(Search_Frame, text = "Which Character? (Optional)", justify= CENTER)
-Mylabel.grid(row = 2, padx=250)
-Mylabel = Label(Search_Frame, text = "Which Slot? (Optional)", justify= CENTER)
-Mylabel.grid(row = 4, padx=250)
+Spacelabel = Label(Search_Frame)
+Spacelabel.grid(row=4)
 Tree = ttk.Treeview(Search_Frame, columns=("Type", "Name", "Count","Char"), show="headings")
 Tree.heading("Type", text="Location", anchor=CENTER)
 Tree.heading("Name", text="Name of Item", anchor=CENTER)
@@ -71,7 +63,7 @@ Tree.heading("Count", text="Count", anchor=CENTER)
 Tree.heading("Char", text="Character", anchor=CENTER)
 Tree.column("Type", width=100)
 Tree.column("Count", width=50)
-Tree.grid(row = 7, sticky="")
+Tree.grid(row = 5, sticky="ns")
 Search_Frame.update()
 
 
@@ -212,7 +204,7 @@ createfreshdb.grid(row = 4)
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
 charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=MULTIPLE)
-charlist.grid(row = 6, column=0, padx=35)
+charlist.grid(row = 6)
 c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
 c.execute("SELECT * FROM Charlist")
 records = c.fetchall()
