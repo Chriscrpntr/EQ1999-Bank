@@ -1,3 +1,8 @@
+#EverquestBank
+#Author: Aliafriend/Chris Carpenter
+#Version: 0.6.6
+
+
 from tkinter import *
 import sqlite3
 import os
@@ -95,7 +100,6 @@ def dbClick():
         conn.commit()
         c.execute("""SELECT * FROM Charpath WHERE path = ?""",(Playerfile,))
         records = c.fetchall()
-        print(records)
         conn.close
         conn= sqlite3.connect(r"CharList.db")
         c = conn.cursor()
@@ -129,7 +133,7 @@ def Resetchar():
         c.execute("""CREATE TABLE IF NOT EXISTS Charpath(Char string,path string)""")
         conn.commit()
         conn.close()
-        charlist.delete(0, END)
+        charlist.delete(i, END)
         ws.update()
         p.step()
     conn= sqlite3.connect(r"CharList.db")
@@ -166,19 +170,21 @@ def Freshdb():
         c = conn.cursor()
         c.execute("""SELECT path FROM Charpath WHERE CHAR = ?""",(charname,))
         records = c.fetchall()
-        print(records)
         conn.close()
         for record in records:
             conn = sqlite3.connect(r"Eqinv.db")
-            with open(f'{record[0]}', newline = '') as games:                                                                                          
-                game_reader = csv.reader(games, delimiter='\t')   
-                for game in game_reader:
-                    c = conn.cursor()
-                    c.execute("""INSERT INTO Inventory (Type, Name , ID , Count, Slots) VALUES(?,?,?,?,?)""",game)
-                    c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(charname,))
-                    c.execute("""DELETE FROM Inventory WHERE Name LIKE 'Empty'""")
-                    c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
-                    p.step()
+            try:
+                with open(f'{record[0]}', newline = '') as games:                                                                                          
+                    game_reader = csv.reader(games, delimiter='\t')   
+                    for game in game_reader:
+                        c = conn.cursor()
+                        c.execute("""INSERT INTO Inventory (Type, Name , ID , Count, Slots) VALUES(?,?,?,?,?)""",game)
+                        c.execute("""UPDATE Inventory SET Char = ? WHERE Char is null """,(charname,))
+                        c.execute("""DELETE FROM Inventory WHERE Name LIKE 'Empty'""")
+                        c.execute("""DELETE FROM Inventory WHERE Type = 'Location'""")
+                        p.step()
+            except:
+                pass
             conn.commit()
             ws.update()
     conn.close()
