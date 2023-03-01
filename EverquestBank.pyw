@@ -1,6 +1,6 @@
 #EverquestBank
 #Author: Aliafriend/Chris Carpenter
-#Version: 0.6.6
+#Version: 0.6.7
 
 
 from tkinter import *
@@ -10,7 +10,6 @@ from tkinter import ttk
 import sqlite3
 import csv, sqlite3
 from tkinter import filedialog
-import time
 from tkinter.ttk import Progressbar
 ###################################################################
 #Tkinter Set Up
@@ -51,13 +50,13 @@ def myClick(ItemName):
     
 
 e = Entry(Search_Frame)
-e.bind("<Return>",myClick)
+e.bind("<KeyPress>",myClick)
 e.grid(row = 1)
 charchar = Entry(Search_Frame)
-charchar.bind("<Return>",myClick)
+charchar.bind("<KeyPress>",myClick)
 charchar.grid(row = 3)
 charslot = Entry(Search_Frame)
-charslot.bind("<Return>",myClick)
+charslot.bind("<KeyPress>",myClick)
 charslot.grid(row = 5)
 w = Scrollbar(Search_Frame, orient='vertical')
 w.grid(row = 7, column = 1, sticky = 'ns')
