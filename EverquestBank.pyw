@@ -1,6 +1,6 @@
 #EverquestBank
 #Author: Aliafriend/Chris Carpenter
-#Version: 0.6.7
+#Version: 0.6.9
 
 
 from tkinter import *
@@ -15,18 +15,34 @@ from tkinter.ttk import Progressbar
 #Tkinter Set Up
 
 ws = Tk()
-ws.title('Eq Inventory Search')
-ws.geometry('750x400')
+ws.title('Eq Inventory Search ' + 'v0.6.9')
 nb = ttk.Notebook(ws)
-nb.grid()
-Search_Frame = Frame(nb, width=400, height = 750)
-Db_Frame = Frame(nb, width=400, height = 750)
+nb.pack(expand = True, fill = BOTH)
+Search_Frame = Frame(nb)
+Db_Frame = Frame(nb)
 
-Search_Frame.grid()
-Db_Frame.grid()
+#Expand and Fill are used to make the frames fill the window
+Search_Frame.pack(expand = True, fill = BOTH)
+Db_Frame.pack(expand = True, fill = BOTH)
 
-nb.add(Search_Frame, text="Search")
-nb.add(Db_Frame, text="Database")
+#Add the tabs to the notebook
+
+nb.add(Search_Frame, text="Search",sticky="news")
+nb.add(Db_Frame, text="Database", sticky="news")
+
+#Configure the notebook to fill the window
+nb.grid_columnconfigure(0,weight=1)
+nb.grid_rowconfigure(0,weight=1)
+
+#Configure the frames to fill the notebook
+Search_Frame.grid_columnconfigure(0,weight=1)
+Search_Frame.grid_rowconfigure(7,weight=1)
+Db_Frame.grid_columnconfigure(0,weight=1)
+Db_Frame.grid_rowconfigure(6,weight=1)
+
+#Configure the window to fill the screen
+
+
 ws.grid_columnconfigure(0,weight=1)
 ws.grid_rowconfigure(0,weight=1)
 
@@ -59,7 +75,7 @@ charslot = Entry(Search_Frame)
 charslot.bind("<KeyPress>",myClick)
 charslot.grid(row = 5)
 w = Scrollbar(Search_Frame, orient='vertical')
-w.grid(row = 7, column = 1, sticky = 'ns')
+w.grid(row = 7, column = 1, sticky = "ns")
 Mylabel = Label(Search_Frame, text = "What Item Are You Looking For? (Optional)", justify= CENTER)
 Mylabel.grid(row = 0, padx=250)
 Mylabel = Label(Search_Frame, text = "", justify= CENTER)
@@ -75,7 +91,7 @@ Tree.heading("Count", text="Count", anchor=CENTER)
 Tree.heading("Char", text="Character", anchor=CENTER)
 Tree.column("Type", width=100)
 Tree.column("Count", width=50)
-Tree.grid(row = 7, sticky="")
+Tree.grid(row = 7, sticky="NWES")
 Search_Frame.update()
 
 
@@ -209,7 +225,7 @@ createfreshdb.grid(row = 4)
 conn= sqlite3.connect(r"CharList.db")
 c = conn.cursor()
 charlist=Listbox(Db_Frame, width = 110, height = 17, selectmode=MULTIPLE)
-charlist.grid(row = 6, column=0, padx=35)
+charlist.grid(row = 6, column=0, padx=35, sticky="news")
 c.execute("""CREATE TABLE IF NOT EXISTS Charlist(Char)""")
 c.execute("SELECT * FROM Charlist")
 records = c.fetchall()
