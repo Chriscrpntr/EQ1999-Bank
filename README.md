@@ -10,7 +10,7 @@ Select the .txt file for the character(s).
 Below will be a list of all the characters you've added.
 
 
-You will need to update the database via the  "Create Fresh Database From Character List" button if you make a new /outputfile inventory file with the program open, or the database refreshes when you open the program. You only need to add your character once because the /output file inventory command replaces the old file with the same name.
+You will need to update the database via the  "Create Fresh Database From Character List" button if you make a new /outputfile inventory file with the program open, or the database refreshes when you open the program. You only need to add your character once because the /outputfile inventory command replaces the old file with the same name.
 
 The "Delete Selected Character" button removes the characters from being updated into the search window.
 
